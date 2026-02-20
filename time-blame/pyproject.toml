@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "time-blame"
+version = "0.1.0"
+description = "Git Time Machine - Browse file history with a TUI"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "textual>=0.52.0",
+    "rich>=13.7.0",
+]
+
+[project.scripts]
+time-blame = "time_blame.main:main"
