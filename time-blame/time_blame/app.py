@@ -32,9 +32,10 @@ class CommitListItem(ListItem):
         """Create the commit list item display."""
         short_hash = self.commit.hash[:7]
         date = datetime.fromtimestamp(self.commit.timestamp).strftime("%Y-%m-%d")
+        author = self.commit.author
 
         # Format: hash  date  subject
-        label_text = f"{short_hash}  {date}  {self.commit.subject}"
+        label_text = f"{short_hash} {author}  {date}  {self.commit.subject}"
         yield Label(label_text)
 
 
