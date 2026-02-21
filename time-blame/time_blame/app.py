@@ -2,6 +2,8 @@
 
 from datetime import datetime
 from pathlib import Path
+from turtle import down
+from typing import Optional
 
 from rich.syntax import Syntax
 from textual.app import App, ComposeResult
@@ -112,8 +114,12 @@ class TimeBlameApp(App):
     """
 
     BINDINGS = [
-        Binding("q", "quit", "Quit"),
-        Binding("r", "reload", "Reload"),
+        Binding("q", "quit", "Quit", show=True),
+        Binding("r", "reload", "Reload", show=True),
+        Binding("pageup", "page_up", "PgUp", show=True, key_display="PgUp"),
+        Binding("pagedown", "page_down", "PgDn", show=True, key_display="PgDn"),
+        Binding("home", "goto_first", "First", show=True),
+        Binding("end", "goto_last", "Last", show=True),
     ]
 
     def __init__(self, file_path: str):
@@ -199,6 +205,38 @@ class TimeBlameApp(App):
     def action_reload(self) -> None:
         """Reload commit history."""
         self.on_mount()
+
+    def action_page_up(self) -> None:
+        """Move up 10 commits (toward newer)"""
+        if self.timeline is not None and self.timeline.index is not None:
+            new_index = max(0, self.timeline.index - 10)
+            self.timeline.index = new_index
+            self._update_file_for_current_selection()
+
+    def action_page_down(self) -> None:
+        """Move down 10 commits (toward older)"""
+        if self.timeline is not None and self.timeline.index is not None:
+            new_index = min(len(self.commits) - 1, self.timeline.index + 10)
+            self.timeline.index = new_index
+            self._update_file_for_current_selection()
+
+    def action_goto_first(self):
+        """Go to first commit (newest)"""
+        if self.timeline is not None:
+            self.timeline.index = 0
+            self._update_file_for_current_selection()
+
+    def action_goto_last(self):
+        """Go to last commit (oldest)"""
+        if self.timeline is not None:
+            self.timeline.index = len(self.commits) - 1
+            self._update_file_for_current_selection()
+
+    def _update_file_for_current_selection(self) -> None:
+        """Update file viewer for currently selected commit"""
+        if self.timeline is not None and self.timeline.index is not None:
+            commit = self.commits[self.timeline.index]
+            self._load_commit_content(commit)
 
 
 def run_tui(file_path: str) -> None:
