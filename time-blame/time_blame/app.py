@@ -6,7 +6,7 @@ from pathlib import Path
 from rich.syntax import Syntax
 from textual.app import App, ComposeResult
 from textual.binding import Binding
-from textual.containers import Horizontal, Vertical
+from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import Footer, Header, Label, ListItem, ListView, Static
 
 from time_blame.git_ops import Commit, GitRepo
@@ -91,6 +91,7 @@ class TimeBlameApp(App):
 
     #file-container {
         width: 65%;
+        height: 1fr;
     }
 
     CommitTimeline {
@@ -98,8 +99,6 @@ class TimeBlameApp(App):
     }
 
     FileViewer {
-        height: 1fr;
-        overflow-y: scroll;
         padding: 1;
     }
 
@@ -141,7 +140,7 @@ class TimeBlameApp(App):
                 yield self.timeline
 
             # Right: File viewer
-            with Vertical(id="file-container"):
+            with VerticalScroll(id="file-container"):
                 debug("Creating file viewer widget")
                 self.file_viewer = FileViewer()
                 yield self.file_viewer
