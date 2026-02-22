@@ -2,8 +2,6 @@
 
 from datetime import datetime
 from pathlib import Path
-from turtle import down
-from typing import Optional
 
 from rich.syntax import Syntax
 from textual.app import App, ComposeResult
@@ -12,6 +10,7 @@ from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import Footer, Header, Label, ListItem, ListView, Static
 
 from time_blame.git_ops import Commit, GitRepo
+from time_blame.syntax import detect_lexer
 
 # Debug logging to file (since Textual captures stdout)
 DEBUG_LOG = Path("/tmp/timeblame_debug.log")
@@ -68,7 +67,7 @@ class FileViewer(Static):
             try:
                 syntax = Syntax(
                     content,
-                    lexer="python",  # TODO: detect from filename
+                    lexer=detect_lexer(filename),
                     theme="monokai",
                     line_numbers=True,
                 )
